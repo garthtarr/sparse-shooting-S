@@ -41,12 +41,11 @@ pak::pak("garthtarr/sparse-shooting-S")
 ```r
 library(sparseshootS)
 
-# Simulate data — keep p well below n/2
 set.seed(1)
 n <- 100
-p <- 15
+p <- 50
 X <- matrix(rnorm(n * p), n, p)
-beta <- c(rep(1, 3), rep(0, p-3))
+beta <- c(rep(1, 5), rep(0, 45))
 y <- X %*% beta + rnorm(n)
 
 # Sparse shooting S-estimator (automatic lambda selection via BIC)
@@ -78,23 +77,18 @@ The non-sparse variant: same shooting loop without the lasso-type penalisation.
 
 ## Known limitations
 
-### Degenerate initialisation when `p ≥ n/2`
+### Degenerate initialisation (rare)
 
-The algorithm initialises coefficients using an MM-estimator (`robustbase::lmrob`) fitted on the `kpred = min(round(n/2), p)` most robustly correlated predictors. When `p` is large relative to `n` — specifically when `kpred` approaches `n/2` — this MM fit can overfit the initialisation data, driving residuals to near zero and therefore the estimated scale (`lmrob$scale`) to zero.
+The algorithm initialises using an MM-estimator (`robustbase::lmrob`) fitted on the `kpred` most robustly correlated predictors (selected by Kendall's rank correlation). The paper's formula `min(n/2, p)` was found to fail at the boundary `p = n/2` in modern `robustbase` (v0.99.7+): `lmrob` returns `scale = 0` because `p + 1 = n/2 + 1` parameters just exceeds the 50% breakdown condition for the internal S-estimator.
 
-A scale of zero propagates into the Tukey biweight weights used in the C++ shooting loop: every standardised residual becomes `Inf`, every weight becomes zero, the loop exits immediately via a `sumwjt == 0` guard, and `betaEst` is returned unchanged from the (degenerate) MM starting values. The penalisation is never applied, so **`sparseshooting()` returns all non-zero coefficients identical across the entire lambda grid** — as if no regularisation had been performed.
+During the AI packaging process this was fixed: `kpred` is now computed as `min(n %/% 2 - 1, p)`, keeping the number of parameters strictly within the breakdown limit. This also ensures that the `p = n/2` case correctly follows the paper's "higher-dimension" path of selecting predictors by Kendall correlation rather than using all of them. The three simulation designs from the paper (`p = 50`, `p = 100`, `p = 200` with `n = 100`) all work correctly with this fix.
 
-This was confirmed during the AI packaging process: with `n = 100` and `p = 50`, `lmrob` consistently returns `scale = 0` and `converged = FALSE`. With `p = 10` and `n = 100`, the algorithm works correctly and produces sparse solutions.
-
-**Practical guidance:** ensure `p` is comfortably below `n/2`. The issue is in the initialisation heuristic in `startvalue_MM()`, not in the core penalisation logic (which was verified to work correctly in isolation). A future fix could cap `kpred` more conservatively or fall back to a simpler starting value when `lmrob` fails to converge.
-
-A warning is raised automatically when this condition is detected:
+A warning is raised if `lmrob` still returns `scale = 0` for any reason:
 
 ```
 Warning: The MM initialisation (lmrob) did not converge and returned a scale of
 zero. This will cause all Tukey biweight weights in the shooting loop to collapse
 to zero, so the penalisation is never applied and coefficients will not be sparse.
-This typically occurs when p >= n/2. Try reducing p or increasing n.
 ```
 
 ---
