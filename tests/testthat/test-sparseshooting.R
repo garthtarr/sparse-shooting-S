@@ -57,13 +57,11 @@ test_that("standardize = FALSE runs without error", {
   expect_no_error(sparseshooting(x = X, y = y, nlambda = 5, standardize = FALSE))
 })
 
-test_that("warning is raised when lmrob scale is zero", {
-  # p = n/2 triggers degenerate MM initialisation
+test_that("p = n/2 no longer triggers a warning after kpred fix", {
+  # Previously kpred = round(n/2) caused lmrob to fail at the breakdown boundary.
+  # Fixed to kpred = n %/% 2 - 1, so p = n/2 now works cleanly.
   set.seed(1)
   X_big <- matrix(rnorm(100 * 50), 100, 50)
   y_big <- X_big[, 1] + rnorm(100)
-  expect_warning(
-    sparseshooting(x = X_big, y = y_big, nlambda = 5),
-    regexp = "MM initialisation"
-  )
+  expect_no_warning(sparseshooting(x = X_big, y = y_big, nlambda = 5))
 })

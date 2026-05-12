@@ -137,7 +137,7 @@ startvalue_MM <- function(X, Y, value, robcor_fit = NULL, Xinit = NULL,
   betaEst <- rep(0, p)
 
   if (is.null(predset)) {
-    kpred <- min(round(n / 2), p)
+    kpred <- min(n %/% 2 - 1, p)
     if (is.null(robcor_fit)) {
       robcor_fit <- robcorr(X = X, Y = Y)
     }
@@ -156,8 +156,7 @@ startvalue_MM <- function(X, Y, value, robcor_fit = NULL, Xinit = NULL,
       "The MM initialisation (lmrob) did not converge and returned a scale of ",
       "zero. This will cause all Tukey biweight weights in the shooting loop to ",
       "collapse to zero, so the penalisation is never applied and coefficients ",
-      "will not be sparse. This typically occurs when p >= n/2. Try reducing p ",
-      "or increasing n.",
+      "will not be sparse.",
       call. = FALSE
     )
   }
