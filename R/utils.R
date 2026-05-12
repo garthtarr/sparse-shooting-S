@@ -15,8 +15,9 @@ Xestimfast <- function(Xmatrix, value = 3) {
   MMuniv <- function(U, indexmax, Xdata) {
     i.variable <- which(apply(U == Xdata, 2, all) == TRUE)
     i.pred <- indexmax[i.variable]
-    mx <- median(U)
-    sx <- mad(U)
+    Xstand <- robustHD::robStandardize(U)
+    mx <- attr(Xstand, "center")
+    sx <- attr(Xstand, "scale")
     fit <- suppressWarnings(
       robustbase::lmrob(U ~ Xdata[, i.pred], setting = "KS2011")
     )
@@ -31,8 +32,9 @@ Xestimfast <- function(Xmatrix, value = 3) {
 
 Xinitftc <- function(U, Xmatrix, Xest, value = 3) {
   i.variable <- which(apply(U == Xmatrix, 2, all) == TRUE)
-  mx <- median(U)
-  sx <- mad(U)
+  xx <- robustHD::robStandardize(U)
+  mx <- attr(xx, "center")
+  sx <- attr(xx, "scale")
   critvalue <- value * sx
   flagX <- 1 * (abs(U - mx) > critvalue)
   (1 - flagX) * U + flagX * (Xest[, i.variable])

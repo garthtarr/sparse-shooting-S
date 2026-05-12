@@ -91,7 +91,7 @@ The following steps were taken by the AI to convert the original scripts into th
 - R code split into `R/sparseshooting.R`, `R/shooting.R`, `R/utils.R`, and `R/sparseshootS-package.R`.
 - C++ source moved to `src/`.
 - `Rcpp::compileAttributes()` run to generate `R/RcppExports.R` and `src/RcppExports.cpp`.
-- `robustbase::robStandardize()` replaced with `median()` / `mad()` — this function was removed from `robustbase` and is no longer exported; the AI determined that median + MAD is the equivalent operation.
+- `robStandardize()` was incorrectly assumed to be from `robustbase`; it is in fact from `robustHD`. The AI initially replaced it with `median()` / `mad()`, but this was corrected after user feedback. `robustHD` has been added as an explicit dependency and `robStandardize()` reinstated.
 - `stats` functions (`dnorm`, `mad`, `median`, `pnorm`, `sd`) added as explicit imports.
 - `testthat` added to `Suggests`; `R (>= 4.1.0)` added to `Depends` (required for `\()` lambda syntax used in utils).
 

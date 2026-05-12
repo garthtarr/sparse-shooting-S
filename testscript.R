@@ -11,8 +11,8 @@ library(robustHD)
 library(mvtnorm)
 
 # Source functions
-source("sparseshootS.R")
-sourceCpp("sparseshootS.cpp")
+# source("sparseshootS.R")
+# sourceCpp("sparseshootS.cpp")
 
 # Data example
 p <- 50 # number of predictors

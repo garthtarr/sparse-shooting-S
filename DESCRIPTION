@@ -20,6 +20,7 @@ Imports:
     pcaPP,
     Rcpp (>= 1.0.0),
     robustbase,
+    robustHD,
     stats
 Suggests:
     testthat (>= 3.0.0)
