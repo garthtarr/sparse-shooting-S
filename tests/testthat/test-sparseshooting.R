@@ -56,3 +56,14 @@ test_that("standardize = FALSE runs without error", {
   expect_no_error(shooting(x = X, y = y, standardize = FALSE))
   expect_no_error(sparseshooting(x = X, y = y, nlambda = 5, standardize = FALSE))
 })
+
+test_that("warning is raised when lmrob scale is zero", {
+  # p = n/2 triggers degenerate MM initialisation
+  set.seed(1)
+  X_big <- matrix(rnorm(100 * 50), 100, 50)
+  y_big <- X_big[, 1] + rnorm(100)
+  expect_warning(
+    sparseshooting(x = X_big, y = y_big, nlambda = 5),
+    regexp = "MM initialisation"
+  )
+})

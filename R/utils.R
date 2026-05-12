@@ -150,6 +150,18 @@ startvalue_MM <- function(X, Y, value, robcor_fit = NULL, Xinit = NULL,
       setting = "KS2011"
     )
   )
+
+  if (!isTRUE(fitinit$converged) || fitinit$scale == 0) {
+    warning(
+      "The MM initialisation (lmrob) did not converge and returned a scale of ",
+      "zero. This will cause all Tukey biweight weights in the shooting loop to ",
+      "collapse to zero, so the penalisation is never applied and coefficients ",
+      "will not be sparse. This typically occurs when p >= n/2. Try reducing p ",
+      "or increasing n.",
+      call. = FALSE
+    )
+  }
+
   betaEst[predset] <- fitinit$coef[-1]
   intercept <- rep.int(fitinit$coef[1], p)
   scaleVar <- rep.int(fitinit$scale, p)
