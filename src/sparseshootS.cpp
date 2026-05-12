@@ -332,7 +332,7 @@ List shootloop(arma::mat ytilde, arma::mat xtilde, arma::mat betaEst, arma::mat 
     lastresidscale(j) = err;
     for(int l = 0;l < j; ++l){
       double value = lastresidscale(l);
-      if((value == lastresidscale(j))){
+      if(value == lastresidscale(j)){
          flagstuck = 1;
          }
      } 
@@ -457,7 +457,7 @@ List shootloop_sparse(arma::mat ytilde, arma::mat xtilde, arma::mat betaEst, arm
     lastresidscale(j) = err;
     for(int l = 0;l < j; ++l){
       double value = lastresidscale(l);
-      if((value == lastresidscale(j))){
+      if(value == lastresidscale(j)){
          flagstuck = 1;
          }
      } 

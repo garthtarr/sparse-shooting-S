@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^testscript\.R$
+^sparseshootS\.R$
+^sparseshootS\.cpp$
+^\.positai$
+^\.claude$

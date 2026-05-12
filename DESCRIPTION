@@ -1,0 +1,30 @@
+Package: sparseshootS
+Title: Sparse Shooting S-Estimator for Robust High-Dimensional Regression
+Version: 0.1.0
+Authors@R: c(
+    person("Lea", "Bottmer", role = "aut"),
+    person("Christophe", "Croux", role = "aut"),
+    person("Ines", "Wilms", email = "i.wilms@maastrichtuniversity.nl",
+           role = c("aut", "cre")))
+Description: Computes the sparse shooting S-estimator and the shooting
+    S-estimator for robust regression in high-dimensional settings with
+    cellwise outliers. Implements the method described in Bottmer, Croux,
+    and Wilms (2022), "Sparse regression for large data sets with outliers",
+    Econometrics and Statistics.
+License: GPL-3
+Encoding: UTF-8
+Depends:
+    R (>= 4.1.0)
+Roxygen: list(markdown = TRUE)
+Imports:
+    pcaPP,
+    Rcpp (>= 1.0.0),
+    robustbase,
+    stats
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+LinkingTo:
+    Rcpp,
+    RcppArmadillo
+Config/roxygen2/version: 8.0.0
